@@ -6,7 +6,7 @@ module IOComponents
 import Solver
 
 
-solveFromFile :: IO Board
+solveFromFile :: IO (Maybe Board)
 solveFromFile = do
   file <- lines <$> readFile "problem.txt"
   let (strVerts, strHorizs') = span (/= "") file

@@ -26,16 +26,19 @@ type Game = (Board, Rules)
 getBoard :: Game -> Board
 getBoard = fst
 
-solveFromRules :: Rules -> Board
+solveFromRules :: Rules -> Maybe Board
 solveFromRules (rvs, rhs) =
-  getBoard $ solve (emptyBoard, (rvs, rhs))
+  getBoard <$> solve (emptyBoard, (rvs, rhs))
     where emptyBoard = replicate (length rvs) $ replicate (length rhs) Nothing
 
-solve :: Game -> Game
+solve :: Game -> Maybe Game
 solve g =
   if isFilled (getBoard g)
-  then g
-  else let g' = lockSome g in solve g'
+  then Just g
+  else let g' = lockSome g in
+    if getBoard g == getBoard g'
+    then Nothing
+    else solve g'
 
 lockSome :: Game -> Game
 lockSome (b, (rvs, rhs)) =
